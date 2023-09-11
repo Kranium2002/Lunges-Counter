@@ -22,6 +22,7 @@
 
     <!-- Declare permissions -->
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera.front" />
 
     <application
         android:allowBackup="true"
