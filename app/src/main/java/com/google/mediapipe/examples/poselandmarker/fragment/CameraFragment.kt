@@ -7,8 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.Button
 import android.widget.Toast
 import androidx.camera.core.*
 import androidx.camera.core.CameraSelector.LENS_FACING_FRONT
@@ -29,6 +27,8 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 import kotlin.math.atan2
+import kotlin.math.max
+import kotlin.math.min
 
 class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
 
@@ -54,6 +54,7 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
     private var camera: Camera? = null
     private var cameraProvider: ProcessCameraProvider? = null
     private var cameraFacing = CameraSelector.LENS_FACING_FRONT
+    private val restingThreshold = 120.0
 
     /** Blocking ML operations are performed using this executor */
     private lateinit var backgroundExecutor: ExecutorService
@@ -227,7 +228,7 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
         activity?.runOnUiThread {
             if (_fragmentCameraBinding != null) {
 
-
+                val lungeProgressBar = fragmentCameraBinding.lungeProgressBar
                 // Pass necessary information to OverlayView for drawing on the canvas
                 fragmentCameraBinding.overlay.setResults(
                     resultBundle.results.first(),
@@ -252,6 +253,27 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
                         temp[24], // Right Hip
                         temp[26] // Right Knee
                     )
+
+
+                    // Calculate progress for lunge
+                    val lungeProgress = if (leftHipAngle<restingThreshold) {
+                        calculateLungeProgress(
+                            leftHipAngle,  // Use left hip angle when left lunge is in progress
+                            lungeAngleThreshold,  // Threshold for detecting lunge
+                            true  // Lunge in progress for the left side
+                        )
+                    } else if (rightHipAngle<restingThreshold) {
+                        calculateLungeProgress(
+                            rightHipAngle,  // Use right hip angle when right lunge is in progress
+                            lungeAngleThreshold,  // Threshold for detecting lunge
+                            true  // Lunge in progress for the right side
+                        )
+                    } else {
+                        // No lunge in progress, set progress to 0
+                        0
+                    }
+
+                    lungeProgressBar.progress = lungeProgress
 
                     // Detect left lunges
                     if (leftHipAngle > lungeAngleThreshold && !isLeftLungeInProgress) {
@@ -278,6 +300,21 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
                 }
 
             }
+        }
+    }
+
+    private fun calculateLungeProgress(
+        currentAngle: Double,
+        thresholdAngle: Double,
+        isInProgress: Boolean,
+        restingAngle: Double = restingThreshold
+    ): Int {
+        return if (isInProgress) {
+            // Lunge in progress, calculate progress as a percentage
+            val progress = ((restingAngle - currentAngle) / (30) * 100).toInt() //Assuming final hip angle is 90 degree so ((120-90)/x)*100 should be 100. Therefore, x=30
+            min(max(progress, 0), 100)  // Ensure progress is within 0-100 range
+        } else {
+            0  // Lunge not in progress, progress is 0
         }
     }
 

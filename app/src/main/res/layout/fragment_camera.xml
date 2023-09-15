@@ -19,6 +19,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <ProgressBar
+            android:id="@+id/lungeProgressBar"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="130dp"
+            android:layout_gravity="bottom|center_horizontal"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:max="100" />
+
+
     <LinearLayout
             android:layout_width="300dp"
             android:layout_height="100dp"
@@ -33,7 +43,7 @@
             android:background="@drawable/rounded_bg">
 
     <TextView
-            android:id="@+id/rightLungeCountTextView"
+            android:id="@+id/leftLungeCountTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0"
@@ -58,7 +68,7 @@
             android:gravity="center_horizontal" />
 
     <TextView
-            android:id="@+id/leftLungeCountTextView"
+            android:id="@+id/rightLungeCountTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0"
