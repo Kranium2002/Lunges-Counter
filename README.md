@@ -12,6 +12,7 @@ This is a Lunges Counter App built using Kotlin for Android native development a
 - Counts lunges using angle measurement.
 - User-friendly and intuitive interface.
 - Accurate lunge counting for workout tracking.
+- Includes a lunge progress tracker bar which helps you in getting full repetitions.
 - Plans for future improvements with a dedicated lunges detection model.
 
 ## Usage
@@ -30,8 +31,9 @@ In the future, we could improve the app by implementing a dedicated machine lear
 ## Demo Video
 
 
+https://github.com/Kranium2002/Lunges-Counter/assets/74452705/001f986a-335f-4ac0-8598-f8b1d88d5ebc
 
-https://github.com/Kranium2002/Lunges-Counter/assets/74452705/a3b5e9c5-6f78-40a7-93b4-358ac970b62f
+
 
 
 
